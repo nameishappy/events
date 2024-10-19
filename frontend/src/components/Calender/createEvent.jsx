@@ -35,7 +35,7 @@ const EventForm = ({ handleupdateEvents }) => {
       const dateTime = `${formData.date}T${formData.time}`;
 
       const resp = await axios.post(
-        "http://localhost:8000/api/events/",
+        "https://events-production-86c8.up.railway.app/api/events/",
         {
           title: formData.title,
           description: formData.description,

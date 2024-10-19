@@ -63,11 +63,14 @@ const EventList = () => {
   const fetchEvents = async () => {
     try {
       const accessToken = JSON.parse(localStorage.getItem("accessToken"));
-      const response = await axios.get("http://localhost:8000/api/events", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axios.get(
+        "https://events-production-86c8.up.railway.app/api/events/",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       setEvents(response.data.response);
     } catch (err) {
       setError(err.message);
@@ -90,7 +93,7 @@ const EventList = () => {
     try {
       const accessToken = JSON.parse(localStorage.getItem("accessToken"));
       await axios.delete(
-        `http://localhost:8000/api/events/${eventToDelete.id}`,
+        `https://events-production-86c8.up.railway.app/api/events/${eventToDelete.id}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -109,7 +112,7 @@ const EventList = () => {
     try {
       const accessToken = JSON.parse(localStorage.getItem("accessToken"));
       const response = await axios.put(
-        `http://localhost:8000/api/events/${eventToUpdate.id}`,
+        `https://events-production-86c8.up.railway.app/api/events/${eventToUpdate.id}`,
         data,
         {
           headers: {

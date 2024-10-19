@@ -2,9 +2,6 @@ import express from "express";
 import dotenv from "dotenv";
 import { connectToDb } from "./db.js";
 import { cert, initializeApp } from "firebase-admin/app";
-import { fileURLToPath } from "url";
-import { dirname, join } from "path";
-import fs from "fs";
 import cors from "cors";
 import { createEventRoutes } from "./routes/events.js";
 
@@ -18,16 +15,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Get service account file path
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const serviceAccountPath = join(__dirname, "serviceAccount.json"); // Make sure this matches your file name exactly
-
-// Initialize Firebase Admin
+// Initialize Firebase Admin using environment variable for credentials
 try {
-  const serviceAccount = JSON.parse(
-    fs.readFileSync(serviceAccountPath, "utf8")
-  );
+  const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_CREDENTIALS); // Store the service account in a Railway environment variable
 
   initializeApp({
     credential: cert(serviceAccount),
@@ -38,12 +28,23 @@ try {
   console.error("Error initializing Firebase Admin:", error);
   process.exit(1);
 }
-const connection = await connectToDb();
+
+// Database connection
+let connection;
+try {
+  connection = await connectToDb();
+  console.log("Database connected successfully");
+} catch (error) {
+  console.error("Database connection failed:", error);
+  process.exit(1);
+}
+
 // Test route
 app.get("/", (req, res) => {
   res.json({ message: "Server is running" });
 });
 
+// Event routes
 app.use("/api/events", createEventRoutes(connection));
 
 // Error handling
@@ -55,12 +56,6 @@ app.use((err, req, res, next) => {
 // Start server
 const PORT = process.env.PORT || 3000;
 
-try {
-  //   await connectToDb();
-  app.listen(PORT, () => {
-    console.log(`Server started at port ${PORT}`);
-  });
-} catch (error) {
-  console.error("Failed to start server:", error);
-  process.exit(1);
-}
+app.listen(PORT, () => {
+  console.log(`Server started at port ${PORT}`);
+});

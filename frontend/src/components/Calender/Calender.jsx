@@ -16,11 +16,14 @@ const CalenderMain = () => {
   const fetchEvents = async () => {
     try {
       const accessToken = JSON.parse(localStorage.getItem("accessToken"));
-      const response = await axios.get("http://localhost:8000/api/events", {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axios.get(
+        "https://events-production-86c8.up.railway.app/api/events/",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
       // Map the response data to the format required by react-big-calendar
       const tempEvents = response.data.response.map((event) => ({

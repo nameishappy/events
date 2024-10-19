@@ -7,7 +7,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        target: "https://events-production-86c8.up.railway.app/api/events/",
         secure: false,
       },
     },
